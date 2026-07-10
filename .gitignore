@@ -1,0 +1,6 @@
+# Local Claude Code session/config — may contain API keys (e.g. .mcp.json)
+.claude/
+.mcp.json
+
+# OS
+.DS_Store

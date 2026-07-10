@@ -1,0 +1,49 @@
+{
+  "expo": {
+    "name": "SpeechAi",
+    "slug": "speech-ai-coach",
+    "scheme": "speakflow",
+    "version": "0.1.0",
+    "orientation": "portrait",
+    "icon": "./assets/images/icon.png",
+    "userInterfaceStyle": "light",
+    "newArchEnabled": true,
+    "splash": {
+      "image": "./assets/images/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#F7F9FB"
+    },
+    "ios": {
+      "supportsTablet": false,
+      "bundleIdentifier": "com.speakflow.app",
+      "infoPlist": {
+        "NSMicrophoneUsageDescription": "발표 음성을 녹음하여 AI가 말하기 속도, 추임새, 에너지를 분석할 수 있도록 마이크 접근 권한이 필요합니다."
+      }
+    },
+    "android": {
+      "package": "com.speakflow.app",
+      "permissions": [
+        "RECORD_AUDIO"
+      ],
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/images/adaptive-icon.png",
+        "backgroundColor": "#F7F9FB"
+      }
+    },
+    "plugins": [
+      "expo-router",
+      [
+        "expo-av",
+        {
+          "microphonePermission": "발표 음성을 녹음하여 AI가 말하기 속도, 추임새, 에너지를 분석할 수 있도록 마이크 접근 권한이 필요합니다."
+        }
+      ],
+      "expo-asset"
+    ],
+    "extra": {
+      "router": {
+        "origin": false
+      }
+    }
+  }
+}

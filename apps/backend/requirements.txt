@@ -1,0 +1,32 @@
+fastapi==0.115.6
+uvicorn[standard]==0.32.1
+python-multipart==0.0.20
+pydantic==2.10.3
+pydantic-settings==2.6.1
+
+# Rate limiting (하루 10회 녹음 제한)
+slowapi==0.1.9
+
+# Audio duration/codec validation (2분 하드 캡)
+mutagen==1.47.0
+
+# Gemini 2.5 Flash — Google GenAI SDK
+google-genai==0.8.0
+
+# Supabase (Postgres + Storage), service_role key stays server-side only
+supabase==2.10.0
+
+# Verifies Supabase Auth JWTs sent by the mobile client (Authorization: Bearer)
+pyjwt==2.10.1
+sqlalchemy[asyncio]==2.0.36
+asyncpg==0.30.0
+alembic==1.14.0
+
+# Retry / backoff for Gemini + Storage calls
+tenacity==9.0.0
+
+python-dotenv==1.0.1
+
+pytest==8.3.4
+pytest-asyncio==0.25.0
+httpx==0.27.2
