@@ -1,0 +1,37 @@
+services:
+  - type: web
+    name: speechai-backend
+    runtime: python
+    rootDir: apps/backend
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.9
+      - key: ENV
+        value: production
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: GEMINI_MODEL
+        value: gemini-2.5-flash
+      - key: SUPABASE_URL
+        sync: false
+      - key: SUPABASE_SERVICE_ROLE_KEY
+        sync: false
+      - key: SUPABASE_BUCKET
+        value: recordings
+      - key: DATABASE_URL
+        sync: false
+      - key: RECOMMENDED_MIN_SECONDS
+        value: "60"
+      - key: RECOMMENDED_MAX_SECONDS
+        value: "120"
+      - key: MAX_RECORDING_SECONDS
+        value: "120"
+      - key: MAX_DAILY_RECORDINGS
+        value: "10"
+      - key: MAX_UPLOAD_SIZE_MB
+        value: "10"
+      - key: ALLOWED_ORIGINS
+        value: '["*"]'
