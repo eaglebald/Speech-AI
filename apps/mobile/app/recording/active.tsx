@@ -1,3 +1,4 @@
+import axios from "axios";
 import { useRouter } from "expo-router";
 import { useEffect, useRef, useState } from "react";
 import { ActivityIndicator, Alert, StyleSheet, Text, View } from "react-native";
@@ -48,11 +49,17 @@ export default function ActiveRecordingScreen() {
         name,
       });
       router.replace(`/analysis/loading?recordingId=${upload.recording_id}`);
-    } catch {
+    } catch (error) {
       setIsUploading(false);
-      Alert.alert(strings.uploadFailedTitle, strings.uploadFailedMessage, [
-        { text: strings.confirm, onPress: () => router.back() },
-      ]);
+      // Surface the backend's own message for validation failures (e.g. "too
+      // short") instead of always blaming the network — those are two very
+      // different problems for the user to act on.
+      const serverMessage = axios.isAxiosError(error) ? error.response?.data?.error?.message : undefined;
+      Alert.alert(
+        strings.uploadFailedTitle,
+        serverMessage ?? strings.uploadFailedMessage,
+        [{ text: strings.confirm, onPress: () => router.back() }],
+      );
     }
   };
 
