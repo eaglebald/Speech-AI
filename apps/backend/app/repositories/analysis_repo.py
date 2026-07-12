@@ -1,4 +1,4 @@
-from sqlalchemy import select
+from sqlalchemy import delete, select
 
 from app.db.session import AsyncSessionLocal
 from app.models.analysis_result import AnalysisResult
@@ -22,3 +22,9 @@ async def get_latest_result(recording_id: str) -> AnalysisResult | None:
         )
         row = await session.execute(stmt)
         return row.scalar_one_or_none()
+
+
+async def delete_by_recording(recording_id: str) -> None:
+    async with AsyncSessionLocal() as session:
+        await session.execute(delete(AnalysisResult).where(AnalysisResult.recording_id == recording_id))
+        await session.commit()

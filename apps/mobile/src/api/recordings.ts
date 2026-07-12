@@ -50,3 +50,7 @@ export async function listRecordings(limit = 20): Promise<RecordingListItem[]> {
   });
   return data.items;
 }
+
+export async function deleteRecording(recordingId: string): Promise<void> {
+  await apiClient.delete(`/recordings/${recordingId}`);
+}

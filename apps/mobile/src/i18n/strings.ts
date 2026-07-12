@@ -70,6 +70,10 @@ const STRINGS = {
     historyEmpty: "No recordings yet.",
     historyProcessing: "Analyzing...",
     historyFailed: "Analysis failed or no data",
+    historySwipeHint: "Swipe left on items to delete",
+    historyDelete: "Delete",
+    historyDeleteFailedTitle: "Delete failed",
+    historyDeleteFailedMessage: "Couldn't delete this recording. Please try again.",
 
     // Onboarding — Step 1: Name
     onboardStepOf: (step: number, total: number) => `Step ${step} of ${total}`,
@@ -168,6 +172,10 @@ const STRINGS = {
     historyEmpty: "아직 녹음 기록이 없어요.",
     historyProcessing: "분석 중...",
     historyFailed: "분석 실패 또는 데이터 없음",
+    historySwipeHint: "왼쪽으로 스와이프하여 삭제",
+    historyDelete: "삭제",
+    historyDeleteFailedTitle: "삭제 실패",
+    historyDeleteFailedMessage: "녹음을 삭제하지 못했습니다. 다시 시도해주세요.",
 
     onboardStepOf: (step: number, total: number) => `${step} / ${total} 단계`,
     onboardNameTitle: "이름이 어떻게 되세요?",

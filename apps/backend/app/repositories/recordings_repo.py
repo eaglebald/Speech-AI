@@ -37,6 +37,19 @@ async def get_recording(recording_id: str) -> Recording | None:
         return await session.get(Recording, recording_id)
 
 
+async def delete_recording(recording_id: str) -> None:
+    """Deletes the recording row. Callers must delete dependent analysis_results
+    first (recordings_repo has no FK-cascade to analysis_result) and remove the
+    Storage object separately — this only touches the DB row.
+    """
+    async with AsyncSessionLocal() as session:
+        recording = await session.get(Recording, recording_id)
+        if recording is None:
+            return
+        await session.delete(recording)
+        await session.commit()
+
+
 async def list_by_device(device_id: str, limit: int = 20) -> list[Recording]:
     async with AsyncSessionLocal() as session:
         stmt = (

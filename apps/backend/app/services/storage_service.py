@@ -62,3 +62,19 @@ async def get_signed_url(storage_path: str, expires_in_seconds: int = 3600) -> s
     except Exception:  # noqa: BLE001 — missing/movable file shouldn't break the whole response
         logger.warning("Failed to create signed URL for %s", storage_path, exc_info=True)
         return None
+
+
+async def delete_recording(storage_path: str) -> None:
+    """Permanently removes the audio object from Supabase Storage.
+
+    Deliberately doesn't swallow errors like get_signed_url does — a delete
+    endpoint that reports success while the file survives in Storage would be
+    a silent data-retention bug, so the caller must see failures and can
+    choose to abort the DB delete rather than leave an orphaned DB-less file.
+    """
+    client = get_supabase_client()
+
+    def _delete() -> None:
+        client.storage.from_(settings.SUPABASE_BUCKET).remove([storage_path])
+
+    await asyncio.to_thread(_delete)

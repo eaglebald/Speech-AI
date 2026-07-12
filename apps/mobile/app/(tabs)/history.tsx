@@ -1,9 +1,11 @@
+import { Ionicons } from "@expo/vector-icons";
+import axios from "axios";
 import { useFocusEffect, useRouter } from "expo-router";
 import { useCallback, useState } from "react";
-import { ActivityIndicator, FlatList, StyleSheet, Text, View } from "react-native";
+import { ActivityIndicator, Alert, FlatList, LayoutAnimation, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-import { listRecordings, type RecordingListItem } from "@/api/recordings";
+import { deleteRecording, listRecordings, type RecordingListItem } from "@/api/recordings";
 import { HistoryItemRow } from "@/features/history/components/HistoryItemRow";
 import { AppHeader } from "@/features/recording/components/AppHeader";
 import { useStrings } from "@/i18n/strings";
@@ -39,6 +41,19 @@ export default function HistoryScreen() {
     }, []),
   );
 
+  const handleDelete = async (recordingId: string) => {
+    try {
+      await deleteRecording(recordingId);
+      LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+      setItems((prev) => prev.filter((item) => item.recordingId !== recordingId));
+    } catch (error) {
+      const serverMessage = axios.isAxiosError(error) ? error.response?.data?.error?.message : undefined;
+      Alert.alert(strings.historyDeleteFailedTitle, serverMessage ?? strings.historyDeleteFailedMessage, [
+        { text: strings.confirm },
+      ]);
+    }
+  };
+
   return (
     <SafeAreaView style={styles.safe} edges={["top"]}>
       <View style={styles.header}>
@@ -57,8 +72,18 @@ export default function HistoryScreen() {
           data={items}
           keyExtractor={(item) => item.recordingId}
           contentContainerStyle={styles.listContent}
+          ListHeaderComponent={
+            <View style={styles.swipeHint}>
+              <Ionicons name="arrow-back-outline" size={14} color={colors.textTertiary} />
+              <Text style={styles.swipeHintText}>{strings.historySwipeHint}</Text>
+            </View>
+          }
           renderItem={({ item }) => (
-            <HistoryItemRow item={item} onPress={() => router.push(`/analysis/result/${item.recordingId}`)} />
+            <HistoryItemRow
+              item={item}
+              onPress={() => router.push(`/analysis/result/${item.recordingId}`)}
+              onDelete={() => handleDelete(item.recordingId)}
+            />
           )}
         />
       )}
@@ -74,4 +99,6 @@ const styles = StyleSheet.create({
   emptyWrap: { flex: 1, alignItems: "center", justifyContent: "center", padding: spacing.lg },
   emptyText: { ...typography.bodyMd, color: colors.textSecondary },
   listContent: { padding: spacing.lg, paddingTop: 0, gap: spacing.sm },
+  swipeHint: { flexDirection: "row", alignItems: "center", gap: 4, paddingBottom: spacing.xs },
+  swipeHintText: { ...typography.caption, color: colors.textTertiary },
 });

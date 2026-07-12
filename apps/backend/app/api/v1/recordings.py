@@ -1,12 +1,13 @@
 import uuid
 from datetime import UTC, datetime
 
-from fastapi import APIRouter, BackgroundTasks, Depends, File, Form, Query, Request, UploadFile
+from fastapi import APIRouter, BackgroundTasks, Depends, File, Form, Query, Request, Response, UploadFile
 
 from app.core.auth import get_current_user_id
+from app.core.errors import AppError, ErrorCode
 from app.core.rate_limit import DAILY_RECORDING_LIMIT, limiter
-from app.repositories.analysis_repo import get_latest_result
-from app.repositories.recordings_repo import create_recording, list_by_device
+from app.repositories.analysis_repo import delete_by_recording, get_latest_result
+from app.repositories.recordings_repo import create_recording, delete_recording, get_recording, list_by_device
 from app.schemas.recording import RecordingUploadResponse
 from app.services import storage_service
 from app.services.analysis_pipeline import run_analysis
@@ -81,3 +82,30 @@ async def list_recordings(limit: int = Query(20, le=50), user_id: str = Depends(
         )
 
     return {"items": items}
+
+
+@router.delete("/recordings/{recording_id}", status_code=204)
+async def delete_recording_endpoint(recording_id: str, user_id: str = Depends(get_current_user_id)):
+    recording = await get_recording(recording_id)
+    if recording is None:
+        raise AppError(ErrorCode.NOT_FOUND, "존재하지 않는 recording_id입니다.", status_code=404)
+    if recording.device_id != user_id:
+        raise AppError(
+            ErrorCode.FORBIDDEN, "본인 소유의 recording만 삭제할 수 있습니다.", status_code=403
+        )
+
+    try:
+        await storage_service.delete_recording(recording.storage_path)
+    except Exception as exc:  # noqa: BLE001 — must not delete DB rows if the file might still exist
+        raise AppError(
+            ErrorCode.STORAGE_ERROR,
+            "오디오 파일 삭제에 실패했습니다. 잠시 후 다시 시도해주세요.",
+            status_code=502,
+        ) from exc
+
+    # Child row first — analysis_results.recording_id has an FK to recordings.id
+    # with no ON DELETE CASCADE, so deleting the parent first would violate it.
+    await delete_by_recording(recording_id)
+    await delete_recording(recording_id)
+
+    return Response(status_code=204)

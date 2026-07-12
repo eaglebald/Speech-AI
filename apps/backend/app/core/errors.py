@@ -14,6 +14,8 @@ class ErrorCode(StrEnum):
     ANALYSIS_FAILED = "ANALYSIS_FAILED"
     NOT_FOUND = "NOT_FOUND"
     UNAUTHORIZED = "UNAUTHORIZED"
+    FORBIDDEN = "FORBIDDEN"
+    STORAGE_ERROR = "STORAGE_ERROR"
 
 
 class AppError(Exception):
