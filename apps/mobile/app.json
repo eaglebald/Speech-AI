@@ -40,7 +40,16 @@
           "microphonePermission": "발표 음성을 녹음하여 AI가 말하기 속도, 추임새, 에너지를 분석할 수 있도록 마이크 접근 권한이 필요합니다."
         }
       ],
-      "expo-asset"
+      "expo-asset",
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "compileSdkVersion": 35,
+            "targetSdkVersion": 35
+          }
+        }
+      ]
     ],
     "extra": {
       "router": {
