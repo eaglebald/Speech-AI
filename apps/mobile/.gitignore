@@ -21,6 +21,8 @@ ios/
 *.p12
 *.key
 *.mobileprovision
+credentials.json
+credentials/
 
 # OS / editor
 .DS_Store
