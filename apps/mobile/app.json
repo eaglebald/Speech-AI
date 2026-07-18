@@ -21,9 +21,11 @@
       }
     },
     "android": {
-      "package": "com.speakflow.app",
+      "package": "com.Speech_Ai.com",
       "permissions": [
-        "RECORD_AUDIO"
+        "RECORD_AUDIO",
+        "android.permission.RECORD_AUDIO",
+        "android.permission.MODIFY_AUDIO_SETTINGS"
       ],
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
@@ -43,7 +45,11 @@
     "extra": {
       "router": {
         "origin": false
+      },
+      "eas": {
+        "projectId": "06615217-4886-4d02-8970-76c058e664a6"
       }
-    }
+    },
+    "owner": "speech_ai"
   }
 }
